@@ -3,10 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BusinessObject.Models;
 
 namespace DataAccess.Repository
 {
-    internal interface IMemberRepository
+    public interface IMemberRepository
     {
+        public IEnumerable<Member> GetMembers();
+        public Member GetMemberByEmail(String memberEmail);
+        public void AddNewMember(Member member);
+        public void UpdateMember(Member member);
+        public void RemoveMember(String memberEmail);
+
+        public Member Login(string Email, string Password);
+
     }
 }
