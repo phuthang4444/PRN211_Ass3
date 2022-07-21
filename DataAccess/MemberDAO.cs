@@ -62,6 +62,24 @@ namespace DataAccess
                 return admin;
             }
         }
+
+        public Member Login(string email, string password)
+        {
+            Member admin = getAdmin();
+            if (admin.Email.Equals(email)
+                &&
+                admin.Password.Equals(password))
+            {
+                return admin;
+            }
+            else
+            {
+                MemberList = (List<Member>)GetMemberList();
+                Member memberLogin = MemberList.SingleOrDefault(member => member.Email.Equals(email) && member.Password.Equals(password));
+                return memberLogin;
+            }
+        }
+
         public IEnumerable<Member> GetMemberList()
         {
             IDataReader dataReader = null;
