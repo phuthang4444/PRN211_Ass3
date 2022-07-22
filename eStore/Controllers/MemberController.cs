@@ -1,5 +1,6 @@
 ﻿using BusinessObject.Models;
 using DataAccess;
+using DataAccess.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
@@ -9,8 +10,12 @@ namespace eStore.Controllers
     public class MemberController : Controller
     {
         private readonly eStoreContext context;
-        public MemberController(eStoreContext context)=>this.context = context;
-        private readonly MemberDAO dao;
+        public MemberController(eStoreContext context)
+        {
+            this.context = context;
+        }
+        /*private readonly MemberDAO dao;*/
+        private readonly MemberRepository dao = new MemberRepository();
         // GET: MemberController
         public ActionResult Index()
         {
@@ -46,7 +51,7 @@ namespace eStore.Controllers
         {
             if (ModelState.IsValid)
             {
-                dao.AddNew(member);
+                dao.AddNewMember(member);
                 return RedirectToAction(nameof(Index));
             }
                 
@@ -81,7 +86,7 @@ namespace eStore.Controllers
             }
             if (ModelState.IsValid)
             {
-                dao.Update(member);
+                dao.UpdateMember(member);
                 return RedirectToAction(nameof(Index));
             }
             
@@ -93,7 +98,7 @@ namespace eStore.Controllers
         // GET: MemberController/Delete/5
         public ActionResult Delete(string? email)
         {
-            var member = dao.Remove(email);
+            var member = dao.RemoveMember(email);
             return RedirectToAction(nameof(Index));
         }
 
