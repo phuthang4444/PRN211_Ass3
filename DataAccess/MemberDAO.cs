@@ -220,10 +220,9 @@ namespace DataAccess
             }
         }
 
-        public void Remove(string memberEmail)
+        public bool Remove(string memberEmail)
         {
             Member memRemove = null;
-
             try
             {
                 memRemove = GetMemberByEmail(memberEmail);
@@ -235,10 +234,12 @@ namespace DataAccess
 
                     var param = dataProvider.CreateParameter(SQLDelete, 4, CommandType.Text, DbType.Int32);
                     dataProvider.Delete(SQLDelete, CommandType.Text, param);
+                    return true;
                 }
                 else
                 {
                     throw new Exception("Member exists.");
+                    return false;
                 }
             }
             catch (Exception ex)
@@ -249,6 +250,7 @@ namespace DataAccess
             {
                 CloseConnection();
             }
+            return false;
         }
     }
     
