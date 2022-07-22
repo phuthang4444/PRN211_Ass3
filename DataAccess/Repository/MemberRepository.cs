@@ -22,7 +22,7 @@ namespace DataAccess.Repository
         public Member Login(string Email, string Password)
             => MemberDAO.Instace.Login(Email, Password);
 
-        public void RemoveMember(string memberEmail)
+        public bool RemoveMember(string memberEmail)
             => MemberDAO.Instace.Remove(memberEmail);
 
         public void UpdateMember(Member member)

@@ -13,7 +13,7 @@ namespace DataAccess.Repository
         public Member GetMemberByEmail(String memberEmail);
         public void AddNewMember(Member member);
         public void UpdateMember(Member member);
-        public void RemoveMember(String memberEmail);
+        public bool RemoveMember(String memberEmail);
 
         public Member Login(string Email, string Password);
 

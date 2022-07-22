@@ -1,35 +1,36 @@
 ﻿using BusinessObject.Models;
 using DataAccess;
+using DataAccess.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 
 namespace eStore.Controllers
 {
-    public class MemerController : Controller
+    public class MemberController : Controller
     {
         private readonly eStoreContext context;
-        private readonly MemberDAO dao;
-        public MemerController(eStoreContext context)
+        public MemberController(eStoreContext context)
         {
             this.context = context;
         }
-
-        // GET: MemerController
+        /*private readonly MemberDAO dao;*/
+        private readonly MemberRepository dao = new MemberRepository();
+        // GET: MemberController
         public ActionResult Index()
         {
             var model = context.Members.ToList();
             return View(model);
         }
 
-        // GET: MemerController/Details/5
-        public ActionResult Details(string email)
+        // GET: MemberController/Details/5
+        public ActionResult Details(int? id)
         {
-            if(email == null)
+            if(id == null)
             {
                 return NotFound();
             }
-            var member = context.Members.FirstOrDefault(m => m.Email == email);
+            var member = context.Members.FirstOrDefault(m => m.MemberId == id);
             if(member == null)
             {
                 return NotFound();
@@ -37,59 +38,71 @@ namespace eStore.Controllers
             return View(member);
         }
 
-        // GET: MemerController/Create
+        // GET: MemberController/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: MemerController/Create
+        // POST: MemberController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(Member member)
         {
-            
-                if (ModelState.IsValid) { 
-                    dao.AddNew(member);
+            if (ModelState.IsValid)
+            {
+                dao.AddNewMember(member);
                 return RedirectToAction(nameof(Index));
-                }
+            }
+                
             
                 return View(member);
             
         }
 
-        // GET: MemerController/Edit/5
+        // GET: MemberController/Edit/5
         public ActionResult Edit(string? email)
         {
-            if(email == null) { return NotFound(); }
-            var member = dao.GetMemberByEmail(email);
-            if(member == null) { return NotFound(); }
+            if (email == null)
+            {
+                return NotFound();
+            }
+            var member = context.Members.Find(email);
+            if(member == null)
+            {
+                return NotFound();
+            }
             return View(member);
         }
 
-        // POST: MemerController/Edit/5
+        // POST: MemberController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(string? email, Member member)
         {
-            if (email != member.Email) { return NotFound(); }
+            if (email != member.Email)
+            {
+                return NotFound();
+            }
             if (ModelState.IsValid)
             {
-                dao.Update(member);
+                dao.UpdateMember(member);
                 return RedirectToAction(nameof(Index));
             }
-             return View(member);
+            
+            
+                return View(member);
             
         }
 
-        // GET: MemerController/Delete/5
+        // GET: MemberController/Delete/5
         public ActionResult Delete(string? email)
         {
-            dao.Remove(email);
+            var member = dao.RemoveMember(email);
             return RedirectToAction(nameof(Index));
         }
 
-        // POST: MemerController/Delete/5
+        // POST: MemberController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)

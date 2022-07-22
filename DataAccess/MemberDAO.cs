@@ -83,7 +83,7 @@ namespace DataAccess
         public IEnumerable<Member> GetMemberList()
         {
             IDataReader dataReader = null;
-            string SQLSelect = "Select MemberID, Email, CompanyName, City, Country, Password " +
+            string SQLSelect = "Select MemberID, Email, CompanyName, City, Country " +
                 "From Member";
             var members = new List<Member>();
             try
@@ -97,8 +97,7 @@ namespace DataAccess
                         Email = dataReader.GetString(1),
                         CompanyName = dataReader.GetString(2),
                         City = dataReader.GetString(3),
-                        Country = dataReader.GetString(4),
-                        Password = dataReader.GetString(5)
+                        Country = dataReader.GetString(4)
                     });
                 }
             }
@@ -117,7 +116,7 @@ namespace DataAccess
         {
             Member member = null;
             IDataReader dataReader = null;
-            string SQLSelect = "Select MemberID, Email, CompanyName, City, Country, Password "
+            string SQLSelect = "Select MemberID, Email, CompanyName, City, Country "
                 + "  From Member" +
                 " Where Email = @Email";
             try
@@ -132,8 +131,7 @@ namespace DataAccess
                         Email = dataReader.GetString(1),
                         CompanyName = dataReader.GetString(2),
                         City = dataReader.GetString(3),
-                        Country = dataReader.GetString(4),
-                        Password = dataReader.GetString(5)
+                        Country = dataReader.GetString(4)
                     };
                 }
             }
@@ -194,14 +192,14 @@ namespace DataAccess
                             " CompanyName = @CompanyName" +
                             " City = @City" +
                             " Country = @Country" +
-                            " Password = @Password" +
+                            /*" Password = @Password" +*/
                         " Where Email = @Email";
                     var parameters = new List<SqlParameter>();
                     parameters.Add(dataProvider.CreateParameter("@Email", 100, member.Email, DbType.String));
                     parameters.Add(dataProvider.CreateParameter("@CompanyName", 40, member.CompanyName, DbType.String));
                     parameters.Add(dataProvider.CreateParameter("@City", 15, member.City, DbType.String));
                     parameters.Add(dataProvider.CreateParameter("@Country", 15, member.Country, DbType.String));
-                    parameters.Add(dataProvider.CreateParameter("@Password", 30, member.Password, DbType.String));
+/*                    parameters.Add(dataProvider.CreateParameter("@Password", 30, member.Password, DbType.String));*/
                     dataProvider.Insert(SQLUpdate, CommandType.Text, parameters.ToArray());
 
                 }
@@ -220,10 +218,9 @@ namespace DataAccess
             }
         }
 
-        public void Remove(string memberEmail)
+        public bool Remove(string memberEmail)
         {
             Member memRemove = null;
-
             try
             {
                 memRemove = GetMemberByEmail(memberEmail);
@@ -235,10 +232,12 @@ namespace DataAccess
 
                     var param = dataProvider.CreateParameter(SQLDelete, 4, CommandType.Text, DbType.Int32);
                     dataProvider.Delete(SQLDelete, CommandType.Text, param);
+                    return true;
                 }
                 else
                 {
                     throw new Exception("Member exists.");
+                    return false;
                 }
             }
             catch (Exception ex)
@@ -249,6 +248,7 @@ namespace DataAccess
             {
                 CloseConnection();
             }
+            return false;
         }
     }
     
